@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Restful Bear</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <script src="angular.min.js"></script>
+    <script src="angular-resource.min.js"></script>
+  </head>
+
+<body > 
+  <div ng-app="bearApp" ng-controller="BearCtrl" class="container">
+    <h2>Restful Bear:</h2>
+    <b> Result: </b> <font color="red">{{result}} </font>
+    <ul>
+        <li ng-repeat="bear in bears track by $index">         
+              {{ bear }}                     
+            <button type="submit" ng-click="get(bear.id)" class="btn btn-secondary"> Get </button> 
+        </li>
+    </ul>
+
+    <h2>New Bear</h2>    
+    <label for="name">Name: </label>    
+    <input type="text" id="name"   ng-model="addBear.name"> <br>
+    <label for="weight">Weight:</label>
+    <input type="number" id="weight" ng-model="addBear.weight"> <br>    
+    <button ng-click="add()">Add</button> <br>
+   
+     <br>  <a href="/">Home</a>
+  </div>
+
+  <script type="text/javascript"> 
+    var app = angular.module("bearApp", ['ngResource']) 
+
+    app.controller("BearCtrl", function($scope,$http){         
+      $scope.result = {};      
+
+      // ======  $http version (without $resource) =========
+      $http.get("/api/bears")
+       .then(function(response) {
+          $scope.bears = response.data; 
+        })  
+ 
+      $scope.get = function(id){ 
+        $http.get("/api/bears/" + id)
+         .then(function(response) {            
+            $scope.result =  response.data;
+          })  
+     }
+
+      $scope.add = function(){ 
+        $http.post("/api/bears", $scope.addBear). 
+          success(function(data){ 
+            console.log($scope.addBear.name)          
+            console.log($scope.addBear.weight)
+            console.log(data)              
+            console.log('message' + data.message)              
+            $scope.bear = {}
+            $scope.result = data.message
+            //$scope.bears = data                      
+
+            $http.get("/api/bears")
+              .then(function(response) {
+              $scope.bears = response.data;
+            })            
+            
+          })
+      } 
+    })
+ 
+  </script>
+</body>
+</html>

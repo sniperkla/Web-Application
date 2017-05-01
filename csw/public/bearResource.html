@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+  <head>    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Restful Bear</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <script src="angular.min.js"></script>
+    <script src="angular-resource.min.js"></script>
+
+  </head>
+
+<body > 
+  <div ng-app="bearApp" ng-controller="BearCtrl" class="container">
+    <h2>Restful Bear:</h2>
+    <b> Result: </b> <font color="red">{{result}} </font>
+    <ul>
+        <li ng-repeat="bear in bears track by $index"  ng-if="!isEmpty(bear)">         
+            <font color="blue" ng-if="select($index, result)">            
+              {{ bear }}              
+            </font>
+            <font color="black" ng-if="!select($index, result)">            
+              {{ bear }}              
+            </font>                          
+            <button type="submit" ng-click="get(bear.id)" class="btn btn-secondary"> Get </button>            
+            <button type="submit" ng-click="edit(bear.id)" class="btn btn-secondary"> Edit </button>   
+            <button type="submit" ng-click="delete(bear.id)" class="btn btn-secondary"> Delete </button>
+        </li>
+    </ul>
+
+    <h2>New Bear</h2>    
+    <label for="name">Name: </label>    
+    <input type="text" id="name"   ng-model="addBear.name" ng-init="addBear.name=''"> <br>
+    <label for="weight">Weight:</label>
+    <input type="number" id="weight" ng-model="addBear.weight"> <br>    
+    <button ng-click="add()">Add</button> <br> <br> 
+
+    <h2>Edit Bear</h2>    
+    <input type="hidden" id="id" ng-model="editBear.id">  
+    <label for="name">Name: </label>    
+    <input type="text" id="name" ng-model="editBear.name" ng-init="editBear.name=''"> <br>
+    <label for="weight">Weight:</label>
+    <input type="number" id="weight" ng-model="editBear.weight"> <br>  
+    <button ng-click="update(editBear.id)">Update</button>    
+
+    <br> <br> <a href="/">Home</a>
+  </div>
+
+  <script type="text/javascript"> 
+    var app = angular.module("bearApp", ['ngResource']) 
+
+// app.controller("BearCtrl", function($scope,$http){ 
+    app.controller("BearCtrl", function($scope,$resource){   
+      var Bear = $resource('/api/bears/:bear_id',{bear_id: '@id'},
+                        // PUT is not a bulid-in http method in ngResource
+                        {
+                          update:{ method:'PUT' }
+                        }
+                 )
+
+      // need to declare in first use in side controller
+      // unless we cannot access editBear via $scope
+      $scope.editBear = {};
+      $scope.result = {};
+      $scope.bears = Bear.query()      
+
+      $scope.get = function(id) { 
+        // bear in function argument = result of Bear.get().
+        // bear = Bear.get({bear_id})
+        Bear.get({ bear_id: id } , function (bear) {
+          $scope.result = bear
+          console.log( bear )
+          console.log('result name = ' + bear.name )          
+        })  
+      }
+
+      $scope.edit = function(id) { 
+        Bear.get({ bear_id: id }, function(bear) {
+          $scope.editBear.id = id 
+          $scope.editBear.name = bear.name
+          $scope.editBear.weight = bear.weight
+          $scope.result = 'Edit bear ' + id           
+          $scope.get(id)
+        })  
+      }      
+
+      $scope.update = function(id) {  
+        if( $scope.editBear.name != '' ) {               
+          Bear.update({bear_id: id}, {name: $scope.editBear.name, weight: $scope.editBear.weight });
+          $scope.result = 'Bear '+ id +' is updated'          
+          $scope.bears = Bear.query();  
+          $scope.get(id)
+        } 
+        else {
+          $scope.result = 'Please enter updating bear by Select Edit button'
+        }
+      }
+
+      $scope.delete = function(id) {         
+        Bear.delete({ bear_id: id } )         
+        $scope.result = 'Bear '+ id +' is deleted'
+        $scope.bears = Bear.query(); 
+      }
+
+      $scope.add = function(){ 
+        Bear.save( {name: $scope.addBear.name, weight: $scope.addBear.weight})        
+        $scope.bears = Bear.query(); 
+      }; 
+
+      // ==== add method: From slide =====
+      // $scope.add = function(){ 
+      //   var givenBear = new Bear($scope.addBear); 
+      //   givenBear.$save(function(data){ 
+      //     console.log(data.message); 
+      //     $scope.bears = Bear.query(); 
+      //   }); 
+      // }; 
+
+      // ======  $http version (without $resource) =========
+      // $http.get("/api/bears")
+      //  .then(function(response) {
+      //     $scope.bears = response.data;
+      //   })  
+ 
+
+      // $scope.add = function(){ 
+      //   $http.post("/api/bears", $scope.bear). 
+      //     success(function(data){ 
+      //       console.log($scope.bear.name)          
+      //       console.log($scope.bear.weight)
+      //       console.log(data)              
+      //       console.log('message' + data.message)              
+      //       //console.log('name'  + data[0].name)
+      //       $scope.bear = {}
+      //       $scope.result = data.message
+      //       //$scope.bears = data                      
+
+      //       $http.get("/api/bears")
+      //         .then(function(response) {
+      //         $scope.bears = response.data;
+      //       })            
+            
+      //     })
+      // } 
+
+      // ======= function for front-end display with Angular ====
+      $scope.isEmpty = function(obj) {
+          return Object.keys(obj).length == 0;
+      }
+
+      $scope.select = function(id,obj) {
+         return   id == obj.id
+      }
+
+    })
+ 
+  </script>
+</body> 
+</html>

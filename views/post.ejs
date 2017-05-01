@@ -1,0 +1,24 @@
+<html>
+	<head>
+		<title><%=title%></title>
+	</head>
+	<body>
+		<h1><%=title%> </h1>
+		<h2><%=message%></h2>
+		<ul>
+			<% posts.forEach(function(post){ %> 
+			   <li><%= post.user%> :: 
+					<%= post.comment%>
+			   </li> 
+			<% }); %> 
+		</ul>
+
+		<form action="/" method="post">
+			User: 
+			<input type="text" name="user" value="Jim" /><br><br>
+			Comment: 
+			<input type="text" name="comment" value="Jim said."/><br><br>
+			<input type="submit" value="add user"/>
+		</form>
+	</body>
+</html>

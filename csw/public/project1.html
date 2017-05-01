@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+  <head>    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Restful Student</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <script src="angular.min.js"></script>
+    <script src="angular-resource.min.js"></script>
+
+  </head>
+
+<body > 
+  <div ng-app="StudentApp" ng-controller="StudentCtrl" class="container">
+    <h2>Restful Student:</h2>
+    <b> Result: </b> <font color="red">{{result}} </font>
+    <ul>
+        <li ng-repeat="Student in Students track by $index"  ng-if="!isEmpty(Student)">         
+            <font color="blue" ng-if="select($index, result)">            
+              {{ Student }}              
+            </font>
+            <font color="black" ng-if="!select($index, result)">            
+              {{ Student }}              
+            </font>                          
+            <button type="submit" ng-click="get(Student.id)" class="btn btn-danger" > Get </button>            
+            <button type="submit" ng-click="edit(Student.id)" class="btn btn-success"> Edit </button>   
+            <button type="submit" ng-click="delete(Student.id)" class="btn btn-secondary"> Delete </button>
+        </li>
+    </ul>
+   <ul>
+        <li>         
+                <button type="submit" ng-click="get(Student.id)" class="btn btn-secondary" > รหัสนักศึกษา </button>            
+            <button type="submit" ng-click="edit(Student.id)" class="btn btn-secondary"> ชื่อ-สกุล</button>   
+            <button type="submit" ng-click="delete(Student.id)" class="btn btn-secondary"> คะแนน</button>
+        </li>
+    </ul>
+
+
+    <h2>New Student</h2>  
+	<label for="stdid">Student ID:</label>
+    <input type="number" id="stdid" ng-model="addStudent.stdid"> <br>   	
+	<label for="name">Name: </label>    
+    <input type="text" id="name"  ng-model="addStudent.name" ng-init="addStudent.name='' " > <br>
+    <label for="score">score:</label>
+    <input type="number" id="score" ng-model="addStudent.score"> <br>     
+    <button ng-click="add()" class="btn btn-primary">Add</button> <br> <br> 
+
+	
+    <h2>Edit Student</h2>   
+	<label for="stdid">Student ID:</label>
+    <input type="number" id="stdid" ng-model="editStudent.stdid" > <br>   		
+   <input type="hidden" id="id" ng-model="editStudent.id" >  
+    <label for="name">Name: </label>    
+    <input type="text" id="name" ng-model="editStudent.name" ng-init="editStudent.name=''" > <br>
+    <label for="score">score:</label>
+    <input type="number" id="score" ng-model="editStudent.score" > <br> 
+    <button ng-click="update(editStudent.id)" class="btn btn-primary">Update</button>    
+
+    <br> <br> <a href="/">Home</a>
+  </div>
+
+  <script type="text/javascript"> 
+    var app = angular.module("StudentApp", ['ngResource']) 
+
+// app.controller("StudentCtrl", function($scope,$http){ 
+    app.controller("StudentCtrl", function($scope,$resource){   
+      var Student = $resource('/api/Students/:Student_id',{Student_id: '@id'},
+                        // PUT is not a bulid-in http method in ngResource
+                        {
+                          update:{ method:'PUT' }
+                        }
+                 )
+
+      // need to declare in first use in side controller
+      // unless we cannot access editStudent via $scope
+      $scope.editStudent = {};
+      $scope.result = {};
+      $scope.Students = Student.query()      
+
+      $scope.get = function(id) { 
+        // Student in function argument = result of Student.get().
+        // Student = Student.get({Student_id})
+        Student.get({ Student_id: id } , function (Student) {
+          $scope.result = Student
+          console.log( Student )
+          console.log('result name = ' + Student.name )          
+        })  
+      }
+
+      $scope.edit = function(id) { 
+        Student.get({ Student_id: id }, function(Student) {
+          $scope.editStudent.id = id 
+          $scope.editStudent.name = Student.name
+          $scope.editStudent.score = Student.score
+		  $scope.editStudent.stdid = Student.stdid
+          $scope.result = 'Edit Student ' + id           
+          $scope.get(id)
+        })  
+      }      
+
+      $scope.update = function(id) {  
+        if( $scope.editStudent.name != '' ) {               
+          Student.update({Student_id: id}, {name: $scope.editStudent.name, score: $scope.editStudent.score, stdid: $scope.editStudent.stdid  });
+          $scope.result = 'Student '+ id +' is updated'          
+          $scope.Students = Student.query();  
+          $scope.get(id)
+        } 
+        else {
+          $scope.result = 'Please enter updating Student by Select Edit button'
+        }
+      }
+
+      $scope.delete = function(id) {         
+        Student.delete({ Student_id: id } )         
+        $scope.result = 'Student '+ id +' is deleted'
+        $scope.Students = Student.query(); 
+      }
+
+      $scope.add = function(){ 
+        Student.save( {name: $scope.addStudent.name, score: $scope.addStudent.score, stdid: $scope.addStudent.stdid})        
+        $scope.Students = Student.query(); 
+      }; 
+
+      // ==== add method: From slide =====
+      // $scope.add = function(){ 
+      //   var givenStudent = new Student($scope.addStudent); 
+      //   givenStudent.$save(function(data){ 
+      //     console.log(data.message); 
+      //     $scope.Students = Student.query(); 
+      //   }); 
+      // }; 
+
+      // ======  $http version (without $resource) =========
+      // $http.get("/api/Students")
+      //  .then(function(response) {
+      //     $scope.Students = response.data;
+      //   })  
+ 
+
+      // $scope.add = function(){ 
+      //   $http.post("/api/Students", $scope.Student). 
+      //     success(function(data){ 
+      //       console.log($scope.Student.name)          
+      //       console.log($scope.Student.weight)
+      //       console.log(data)              
+      //       console.log('message' + data.message)              
+      //       //console.log('name'  + data[0].name)
+      //       $scope.Student = {}
+      //       $scope.result = data.message
+      //       //$scope.Students = data                      
+
+      //       $http.get("/api/Students")
+      //         .then(function(response) {
+      //         $scope.Students = response.data;
+      //       })            
+            
+      //     })
+      // } 
+
+      // ======= function for front-end display with Angular ====
+      $scope.isEmpty = function(obj) {
+          return Object.keys(obj).length == 0;
+      }
+
+      $scope.select = function(id,obj) {
+         return   id == obj.id
+      }
+
+    })
+ 
+  </script>
+</body> 
+</html>

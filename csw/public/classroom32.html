@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+  <head>    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Restful Classroom</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <script src="angular.min.js"></script>
+    <script src="angular-resource.min.js"></script>
+
+  </head>
+
+<body>
+  <div ng-app="ClassroomApp" ng-controller="ClassroomCtrl" class="container">
+    <FONT COLOR=#0000FF><h1>Classroom booking</h1></FONT>
+	 <table class="table">
+      <thead>
+        <tr>
+          <th>ชื่อ-สกุล</th>         
+          <th>เวลาเริ่ม</th>
+          <th>เวลาสิ้นสุด</th>
+          <th>&nbsp;</th>
+          <th>&nbsp;</th>
+        </tr>
+      </thead>
+	   <tbody>
+		<tr>	
+		<td><input type="text" class="form-control" id="name"   ng-model="addClassroom.name" ng-init="addClassroom.name=''"></td>
+		<td><input type="number" class="form-control" id="start"   ng-model="addClassroom.start" ng-init="addClassroom.start=''"></td>
+		<td><input type="number" class="form-control" id="end"   ng-model="addClassroom.end" ng-init="addClassroom.end=''"></td>
+		<td><button ng-click="add()" class="btn  btn-secondar">Add Classroom</button></td>
+		</tr>
+		<tr ng-repeat="classroom in classroomlist track by $index"  ng-if="!isEmpty(classroom)">              
+              <td>{{ Classroom.name }}</td>              
+              <td>{{ Classroom.start }}</td>              
+              <td>{{ Classroom.end }}   </td>                              
+			  <td><button type="submit" class="btn btn-danger" ng-click="delete(Classroom.id)"> Remove </button></td>       
+			  <td><button type="submit" class="btn btn-warning" ng-click="edit(Classroom.id)"> Edit </button></td>   
+          </tr>  
+		 </tbody>
+    </table> 
+	
+    <b> Result: </b> <font color="red">{{result}} </font>
+     <ul>
+        <li ng-repeat="Classroom in Classrooms track by $index"  ng-if="!isEmpty(Classroom)">         
+            <font color="blue" ng-if="select($index, result)">            
+              {{ Classroom }}              
+            </font>
+            <font color="black" ng-if="!select($index, result)">            
+              {{ Classroom }}              
+            </font>                          
+            <button type="submit" ng-click="get(Classroom.id)" class="btn btn-secondary"> Get </button>            
+            <button type="submit" ng-click="edit(Classroom.id)" class="btn btn-danger"> Edit </button>   
+            <button type="submit" ng-click="delete(Classroom.id)" class="btn btn-success"> Delete </button>
+			
+        </li>
+    </ul>
+
+    <h2>Check time </h2>    
+    <label for="start">เวลาเริ่ม:</label>
+    <input type="number" id="start" ng-model="checkClassroom.start"> <br>    
+	<label for="end">เวลาสิ้นสุด:</label>
+    <input type="number" id="end" ng-model="checkClassroom.end"> <br>    
+	<td><button class="btn btn-info" ng-click="update()">Check</button>  </td> <br> 
+
+    <br> <h2>Edit Classroom</h2>    
+    <input type="hidden" id="id" ng-model="editClassroom.id" >  
+    <label for="name">ชื่อ-สกุล: </label>    
+    <input type="text" id="name" ng-model="editClassroom.name" ng-init="editClassroom.name=''"> <br>
+    <label for="start">เวลาเริ่ม:</label>
+    <input type="number" id="start" ng-model="editClassroom.start" > <br> 
+	<label for="end">เวลาสิ้นสุด:</label>
+    <input type="number" id="end" ng-model="editClassroom.end"> <br>   	
+    <button ng-click="update(editClassroom.id)" class="btn btn-primary">Update</button>    
+    <br> <br> <a href="/">Home</a>
+  </div>
+
+  <script type="text/javascript"> 
+    var app = angular.module("ClassroomApp", ['ngResource']) 
+
+// app.controller("ClassroomCtrl", function($scope,$http){ 
+    app.controller("ClassroomCtrl", function($scope,$resource){   
+      var Classroom = $resource('/api/Classrooms/:Classroom_id',{Classroom_id: '@id'},
+                        // PUT is not a bulid-in http method in ngResource
+                        {
+                          update:{ method:'PUT' }
+                        }
+                 )
+
+      // need to declare in first use in side controller
+      // unless we cannot access editClassroom via $scope
+      $scope.editClassroom = {};
+      $scope.result = {};
+      $scope.Classrooms = Classroom.query()      
+
+      $scope.get = function(id) { 
+        // Classroom in function argument = result of Classroom.get().
+        // Classroom = Classroom.get({Classroom_id})
+          Classroom.get({ Classroom_id: id } , function (Classroom) {
+          $scope.result = Classroom
+          console.log( Classroom )
+          console.log('result name = ' + Classroom.name )          
+        })  
+      }
+
+      $scope.edit = function(id) { 
+        Classroom.get({ Classroom_id: id }, function(Classroom) {
+          $scope.editClassroom.id = id 
+          $scope.editClassroom.name = Classroom.name
+          $scope.editClassroom.start = Classroom.start
+		  $scope.editClassroom.end = Classroom.end
+          $scope.result = 'Edit Classroom ' + id           
+          $scope.get(id)
+        })  
+      }      
+	
+
+
+      $scope.update = function(id) {  
+        if( $scope.editClassroom.name != '' ) {               
+          Classroom.update({Classroom_id: id}, {name: $scope.editClassroom.name, start: $scope.editClassroom.start, end: $scope.editClassroom.end  });
+          $scope.result = 'Classroom '+ id +' is updated'          
+          $scope.Classrooms = Classroom.query();  
+          $scope.get(id)
+        } 
+        else {
+          $scope.result = 'Please enter updating Classroom by Select Edit button'
+        }
+      }
+
+      $scope.delete = function(id) {         
+        Classroom.delete({ Classroom_id: id } )         
+        $scope.result = 'Classroom '+ id +' is deleted'
+        $scope.Classrooms = Classroom.query(); 
+      }
+
+      $scope.add = function(){ 
+        Classroom.save( {name: $scope.addClassroom.name, start: $scope.addClassroom.start, end: $scope.addClassroom.end})        
+        $scope.Classrooms = Classroom.query(); 
+      }; 
+
+      // ==== add method: From slide =====
+      // $scope.add = function(){ 
+      //   var givenClassroom = new Classroom($scope.addClassroom); 
+      //   givenClassroom.$save(function(data){ 
+      //     console.log(data.message); 
+      //     $scope.Classrooms = Classroom.query(); 
+      //   }); 
+      // }; 
+
+      // ======  $http version (without $resource) =========
+      // $http.get("/api/Classrooms")
+      //  .then(function(response) {
+      //     $scope.Classrooms = response.data;
+      //   })  
+ 
+
+      // $scope.add = function(){ 
+      //   $http.post("/api/Classrooms", $scope.Classroom). 
+      //     success(function(data){ 
+      //       console.log($scope.Classroom.name)          
+      //       console.log($scope.Classroom.weight)
+      //       console.log(data)              
+      //       console.log('message' + data.message)              
+      //       //console.log('name'  + data[0].name)
+      //       $scope.Classroom = {}
+      //       $scope.result = data.message
+      //       //$scope.Classrooms = data                      
+
+      //       $http.get("/api/Classrooms")
+      //         .then(function(response) {
+      //         $scope.Classrooms = response.data;
+      //       })            
+            
+      //     })
+      // } 
+
+      // ======= function for front-end display with Angular ====
+      $scope.isEmpty = function(obj) {
+          return Object.keys(obj).length == 0;
+      }
+
+      $scope.select = function(id,obj) {
+         return   id == obj.id
+      }
+
+    })
+ 
+  </script>
+</body> 
+</html>

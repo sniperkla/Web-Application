@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+  <head>    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Restful Project</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <script src="angular.min.js"></script>
+    <script src="angular-resource.min.js"></script>
+
+  </head>
+
+<body > 
+  <div ng-app="ProjectApp" ng-controller="ProjectCtrl" class="container">
+    <h2>Restful Project:</h2>
+    <b> Result: </b> <font color="red">{{result}} </font>
+    <ul>
+        <li ng-repeat="Project in Projects track by $index"  ng-if="!isEmpty(Project)">         
+            <font color="blue" ng-if="select($index, result)">            
+              {{ Project }}              
+            </font>
+            <font color="black" ng-if="!select($index, result)">            
+              {{ Project }}              
+            </font>                          
+            <button type="submit" ng-click="get(Project.id)" class="btn btn-secondary"> Get </button>            
+            <button type="submit" ng-click="edit(Project.id)" class="btn btn-secondary"> Edit </button>   
+            <button type="submit" ng-click="delete(Project.id)" class="btn btn-secondary"> Delete </button>
+        </li>
+    </ul>
+
+    <h2>New Project</h2>    
+    <label for="name">Name: </label>    
+    <input type="text" id="name"  ng-model="addProject.name" ng-init="addProject.name='' "  size="80" maxlength="200"> <br>
+    <label for="like">Like:</label>
+    <input type="number" id="like" ng-model="addProject.like"size="120" maxlength="200"> <br>    
+	<label for="share">Share:</label>
+    <input type="number" id="share" ng-model="addProject.share"size="120" maxlength="200"> <br>    
+    <button ng-click="add()" class="btn btn-primary">Add</button> <br> <br> 
+
+    <h2>Edit Project</h2>    
+    <input type="hidden" id="id" ng-model="editProject.id" size="80" maxlength="200">  
+    <label for="name">Name: </label>    
+    <input type="text" id="name" ng-model="editProject.name" ng-init="editProject.name=''" size="80" maxlength="200"> <br>
+    <label for="like">Like:</label>
+    <input type="number" id="like" ng-model="editProject.like" size="120" maxlength="200"> <br> 
+	<label for="share">Share:</label>
+    <input type="number" id="share" ng-model="editProject.share" size="120" maxlength="200"> <br>   	
+    <button ng-click="update(editProject.id)" class="btn btn-primary">Update</button>    
+
+    <br> <br> <a href="/">Home</a>
+  </div>
+
+  <script type="text/javascript"> 
+    var app = angular.module("ProjectApp", ['ngResource']) 
+
+// app.controller("ProjectCtrl", function($scope,$http){ 
+    app.controller("ProjectCtrl", function($scope,$resource){   
+      var Project = $resource('/api/Projects/:Project_id',{Project_id: '@id'},
+                        // PUT is not a bulid-in http method in ngResource
+                        {
+                          update:{ method:'PUT' }
+                        }
+                 )
+
+      // need to declare in first use in side controller
+      // unless we cannot access editProject via $scope
+      $scope.editProject = {};
+      $scope.result = {};
+      $scope.Projects = Project.query()      
+
+      $scope.get = function(id) { 
+        // Project in function argument = result of Project.get().
+        // Project = Project.get({Project_id})
+        Project.get({ Project_id: id } , function (Project) {
+          $scope.result = Project
+          console.log( Project )
+          console.log('result name = ' + Project.name )          
+        })  
+      }
+
+      $scope.edit = function(id) { 
+        Project.get({ Project_id: id }, function(Project) {
+          $scope.editProject.id = id 
+          $scope.editProject.name = Project.name
+          $scope.editProject.like = Project.like
+		  $scope.editProject.share = Project.share
+          $scope.result = 'Edit Project ' + id           
+          $scope.get(id)
+        })  
+      }      
+
+      $scope.update = function(id) {  
+        if( $scope.editProject.name != '' ) {               
+          Project.update({Project_id: id}, {name: $scope.editProject.name, like: $scope.editProject.like, share: $scope.editProject.share  });
+          $scope.result = 'Project '+ id +' is updated'          
+          $scope.Projects = Project.query();  
+          $scope.get(id)
+        } 
+        else {
+          $scope.result = 'Please enter updating Project by Select Edit button'
+        }
+      }
+
+      $scope.delete = function(id) {         
+        Project.delete({ Project_id: id } )         
+        $scope.result = 'Project '+ id +' is deleted'
+        $scope.Projects = Project.query(); 
+      }
+
+      $scope.add = function(){ 
+        Project.save( {name: $scope.addProject.name, like: $scope.addProject.like, share: $scope.addProject.share})        
+        $scope.Projects = Project.query(); 
+      }; 
+
+      // ==== add method: From slide =====
+      // $scope.add = function(){ 
+      //   var givenProject = new Project($scope.addProject); 
+      //   givenProject.$save(function(data){ 
+      //     console.log(data.message); 
+      //     $scope.Projects = Project.query(); 
+      //   }); 
+      // }; 
+
+      // ======  $http version (without $resource) =========
+      // $http.get("/api/Projects")
+      //  .then(function(response) {
+      //     $scope.Projects = response.data;
+      //   })  
+ 
+
+      // $scope.add = function(){ 
+      //   $http.post("/api/Projects", $scope.Project). 
+      //     success(function(data){ 
+      //       console.log($scope.Project.name)          
+      //       console.log($scope.Project.weight)
+      //       console.log(data)              
+      //       console.log('message' + data.message)              
+      //       //console.log('name'  + data[0].name)
+      //       $scope.Project = {}
+      //       $scope.result = data.message
+      //       //$scope.Projects = data                      
+
+      //       $http.get("/api/Projects")
+      //         .then(function(response) {
+      //         $scope.Projects = response.data;
+      //       })            
+            
+      //     })
+      // } 
+
+      // ======= function for front-end display with Angular ====
+      $scope.isEmpty = function(obj) {
+          return Object.keys(obj).length == 0;
+      }
+
+      $scope.select = function(id,obj) {
+         return   id == obj.id
+      }
+
+    })
+ 
+  </script>
+</body> 
+</html>

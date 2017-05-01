@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Restful project</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <script src="angular.min.js"></script>
+    <script src="angular-resource.min.js"></script>
+  </head>
+
+<body > 
+  <div ng-app="projectApp" ng-controller="projectCtrl" class="container">
+    <h2>Senior Project Show Cases CoE-ICT 2017 </h2>
+    <b> Project </b> <font color="red">{{result}} </font>
+    <ul>
+        <li ng-repeat="project in projects track by $index">         
+              {{ project }}                     
+            <button type="submit" ng-click="get(project.id)" class="btn btn-secondary"> Get </button> 
+        </li>
+    </ul>
+
+    <h2>Add new project</h2>    
+    <label for="name">Project: </label><br>    
+    <input type="text" id="name"   ng-model="addproject.name"> <br>
+    <label for="like">Like:</label><br>
+    <input type="number" id="like" ng-model="addproject.like"> <br>  
+	<label for="share">Share:</label><br>
+    <input type="number" id="weight" ng-model="addproject.share"> <br>  	
+    <button ng-click="add()">submit</button> <br><br><br><br>
+	
+	
+	<h2>Edit project</h2>    
+    <input type="hidden" id="id" ng-model="editProject.id">  
+    <label for="name">Project: </label>    
+    <input type="text" id="name" ng-model="editProject.name" ng-init="editProject.name=''"> <br>
+    <label for="like">Like:</label>
+    <input type="number" id="like" ng-model="editProject.like"> <br>  
+	<label for="share">Share:</label>
+    <input type="number" id="share" ng-model="editProject.share"> <br> 
+    <button ng-click="update(editProject.id)">Update</button> 
+  
+  </div>
+
+  <script type="text/javascript"> 
+    var app = angular.module("projectApp", ['ngResource']) 
+
+    app.controller("projectCtrl", function($scope,$http){         
+      $scope.result = {};      
+
+      // ======  $http version (without $resource) =========
+      $http.get("/api/projects")
+       .then(function(response) {
+          $scope.projects = response.data; 
+        })  
+ 
+      $scope.get = function(id){ 
+        $http.get("/api/projects/" + id)
+         .then(function(response) {            
+            $scope.result =  response.data;
+          })  
+     }
+	 $scope.editProject = {};
+
+      $scope.add = function(){ 
+        $http.post("/api/projects", $scope.addproject). 
+          success(function(data){ 
+            console.log($scope.addproject.name)          
+            console.log($scope.addproject.like)
+			console.log($scope.addproject.share)
+            console.log(data)              
+            console.log('message' + data.message)              
+            $scope.project = {}
+            $scope.result = data.message
+            //$scope.projects = data                      
+
+            $http.get("/api/projects")
+              .then(function(response) {
+              $scope.projects = response.data;
+            })            
+            
+          })
+      }
+      $scope.edit = function(id) { 
+        project.get({ project_id: id }, function(project) {
+          $scope.editProject.id = id 
+          $scope.editProject.name = project.name
+          $scope.editProject.like = project.like
+		  $scope.editProject.share = project.share
+          $scope.result = 'Edit project ' + id           
+          $scope.get(id)
+        })  
+      }	  
+    })
+ 
+  </script>
+</body>
+</html>
