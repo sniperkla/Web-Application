@@ -191,7 +191,7 @@
 				
 		       
 				
-				<ul ng-repeat="post in posts  | orderBy : '-id'" ng-if="!isEmpty(post)">
+				<ul ng-repeat="post in posts | orderBy : '-id' track by $index   " ng-if="!isEmpty(post)">
  				<br>
  					<h3>Name : {{post.name}} </h3><br><br>
  					<center><img src="{{post.timage}}" ></center>	
