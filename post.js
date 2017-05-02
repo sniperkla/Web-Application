@@ -50,6 +50,6 @@ router.route('/posts/:post_id')
 app.use('/api', bodyParser.json(), router)
 // app.use('/api',bodyParser.urlencoded({extended:false}), router)
 
-app.listen(80, function() {
+app.listen(50038, function() {
 	console.log('server is running...')
 })
