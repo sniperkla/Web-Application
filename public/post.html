@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-resource.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>OUTstragram</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+
+    <!-- Plugin CSS -->
+    <link href="vendor/magnific-popup/magnific-popup.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/creative.min.css" rel="stylesheet">
+
+    <!-- Temporary navbar container fix -->
+    <style>
+    .navbar-toggler {
+        z-index: 1;
+    }
+    
+    @media (max-width: 576px) {
+        nav > .container {
+            width: 100%;
+        }
+    }
+    </style>
+
+</head>
+
+<body id="page-top">
+	<div ng-app="postApp" ng-controller="PostCtrl">
+
+    <!-- Navigation -->
+    <nav class="navbar fixed-top navbar-toggleable-md navbar-light" id="mainNav">
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarExample" aria-controls="navbarExample" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="container">
+            <a class="navbar-brand" href="#page-top"> OUTstragram  >>> </a>
+            <div class="collapse navbar-collapse" id="navbarExample">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">Member</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#services">POST</a>
+                    </li>
+                                   <li class="nav-item">
+                        <a class="nav-link" href="#contact">News feed</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <header class="masthead">
+	
+       <center><br><br><br><br><br><br><br>
+	   
+	    <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">Explain OUTstragram</h2>
+                    <hr class="primary">
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-3 text-center">
+                    <div class="service-box">
+                        <i class="fa fa-4x fa-diamond text-primary sr-icons"></i>
+                        <h3>POST</h3>
+                        <p class="text-white">You can post and comment under the photo..</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="service-box">
+                        <i class="fa fa-4x fa-paper-plane text-primary sr-icons"></i>
+                        <h3>Edit Post</h3>
+                        <p class="text-white">You can edit Pictures and messages!</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="service-box">
+                        <i class="fa fa-4x fa-newspaper-o text-primary sr-icons"></i>
+                        <h3>Delete</h3>
+                        <p class="text-white">You can delete old posts you do not want..</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="service-box">
+                        <i class="fa fa-4x fa-heart text-primary sr-icons"></i>
+                        <h3>Posting</h3>
+                        <p class="text-white">You need to copy the image link from the internet.!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+	   
+	    </header>
+
+    <section class="call-to-action bg-dark" id="about">
+	          <div class="row">
+                <div class="col-lg-8 offset-lg-2 text-center">
+                    <h2 class="section-heading">Member</h2>
+                    <hr class="primary">
+                 <h6>   น.ส.เจนจิรา  ตัณฑอินทร์  5735512008 <br><br>
+					      นายปิยพันธ์ ฉิมช่วย  5735512038<br><br>
+					      นายกตัญญู  อังสุภานิช  5735512091<br></h6>
+                </div>
+                <div class="col-lg-4 offset-lg-2 text-center">
+                    <i class="fa fa-phone fa-3x sr-contact"></i>
+					<p>ติดต่อได้ที่</p>
+                    <p>0833893062</p>
+				
+                </div>
+                <div class="col-lg-4 text-center">
+                    <i class="fa fa-envelope-o fa-3x sr-contact"></i><br><br>
+					<p>ติดต่อผ่าน Fackbook</p>
+                    <h6> <a href="https://www.facebook.com/nologolanla">Facebook : NAM</a><br><br>
+					 <a href="https://www.facebook.com/piyaphun.chimchuai?fref=ts">Facebook : AUN</a><br><br>
+					  <a href="https://www.facebook.com/katanyoo61?fref=ts">Facebook : KLA</a><br><br></h6>
+                </div>
+        </div>
+    </section>
+
+    <section id="services">
+      <center><table>
+	<tr>
+	<td>
+  
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2 text-center">
+				
+          <h2 class="section-heading text-blue"> POST !</h2>
+					
+		<label for="timage">Image Link</label>
+ 		<input type="text" id="timage" ng-model="addPost.timage"><br> 				
+ 		<label for="name">Name: </label>
+ 		<input type="text" id="name" ng-model="addPost.name"><br>
+ 		<label for="comment">Caption:</label>
+ 		<textarea id="comment" ng-model="addPost.comment"></textarea><br> 	
+ 		<button ng-click="add()" class="btn btn-success" >Add</button>
+		
+               </div>
+	  </div>
+          
+	</td>
+	<td>
+        <div class="row">
+        <div class="col-lg-8 offset-lg-2 text-center">
+        <h2 class="section-heading text-blue"> EDIT POST !</h2>
+		
+		
+		<label for="timage">Image link </label>
+		<input type="text" id="timage" ng-model="editPost.timage"><br>
+ 		<label for="name">Name:</label>
+ 		<input type="text" id="name" ng-model="editPost.name"><br>
+ 		<label for="comment">Caption:</label>
+ 		<textarea id="comment" ng-model="editPost.comment"></textarea><br> 			
+ 		<button ng-click="update(editPost.id)" class="btn btn-warning">Update</button>
+       
+
+    </div>
+	  </div>
+	   </td></tr>
+		
+		</table></center>
+    </section>
+
+      <section id="contact">
+	  <center>
+           				  <div class="header-content">
+            <div class="header-content-inner">
+                <h1 id="homeHeading">New Post</h1>
+                <hr>
+				
+		       
+				
+				<ul ng-repeat="post in posts | orderBy : '-id' track by $index   " ng-if="!isEmpty(post)">
+ 				<br>
+ 					<h3>Name : {{post.name}} </h3><br><br>
+ 					<center><img src="{{post.timage}}" ></center>	
+ 				
+				  <br>
+ 					<h3>Caption: {{post.comment}} </h3>
+ 			      <br>	 <br>	 <br>		
+ 				
+ 				<button type="submit" ng-click="edit(post.id)" class="btn btn-info"> Edit </button>
+ 				<button type="submit" ng-click="delete(post.id)" class="btn btn-primary"> Delete </button>
+ 		
+ 		</ul> 	
+                
+          </div>
+        </div>
+		</center>
+    </section>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/tether/tether.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="vendor/scrollreveal/scrollreveal.min.js"></script>
+    <script src="vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
+
+    <!-- Custom scripts for this template -->
+    <script src="js/creative.min.js"></script>
+	<script type="text/javascript">
+ 		var app = angular.module("postApp",['ngResource'])
+ 		app.controller("PostCtrl", function($scope, $resource){
+ 			var Post = $resource('/api/posts/:post_id',{post_id: '@id'},
+ 				{ 
+ 					update: {method:'PUT' }	
+ 				})
+ 			$scope.editPost = {}
+ 			$scope.result = {}
+ 			$scope.posts = Post.query()
+
+ 			$scope.get = function(id) {
+ 				Post.get({post_id:id}, function(post) {
+ 					$scope.result = post
+ 				})
+ 			}	
+
+ 			$scope.add =  function() {
+ 			   //  var givenPost = new Post($scope.addPost)
+			    // givenPost.$save(function(data){ 
+			    //     console.log(data.message)			        
+			    // }) 
+
+			    Post.save({timage: $scope.addPost.timage,
+							name: $scope.addPost.name, 
+			    		 comment: $scope.addPost.comment,})
+			    $scope.posts = Post.query()
+ 			}
+
+ 			$scope.edit = function(id) {
+ 				Post.get({post_id:id}, function(post) {
+ 					$scope.editPost.id = id
+					$scope.editPost.timage = post.timage
+ 					$scope.editPost.name = post.name
+ 					$scope.editPost.comment = post.comment
+ 					$scope.result = post
+ 					$scope.message = 'Edited post ' +  id
+ 				})
+ 			}
+
+ 			$scope.update = function(id) {
+ 				Post.update( {post_id: id}, { timage: $scope.editPost.timage, name: $scope.editPost.name, 
+ 											comment: $scope.editPost.comment}) 				
+ 				$scope.result = 'Update post ' + id
+ 				$scope.posts = Post.query()
+ 			}
+
+ 			$scope.delete = function(id) {
+ 				Post.delete( {post_id: id})
+ 				$scope.result = 'Delete post ' + id
+ 				$scope.posts = Post.query()
+ 			}
+
+ 			$scope.isEmpty = function(post) {
+ 				return Object.keys(post).length == 0
+ 			}
+
+ 			$scope.select = function(id, post) {
+ 				return id == post.id
+ 			}
+
+ 		})
+ 	</script>
+</div>
+</body>
+
+</html>
